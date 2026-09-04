@@ -1,32 +1,11 @@
-# React + TypeScript + Vite
+# Relay Dispatch Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A dashboard for managing and monitoring radio communication links.
 
-Currently, two official plugins are available:
+## Design Justification
+- Colors: standard green and red for active and error states respectively. Light blue chosen for stand-by state representing a neutral state not requiring operator attention. Minimal color footprint and icon usage to maintain modern operation first aesthetic. Deep blue background used to subtley tie into the police dispatch theme.
+- Layout: Vertically oriented cards for each signal allowing for easy scanning and quick identification of signal status. Collapsible design allows for users to focus on active signals while maintaining access to historical data.
+- Controls: Sort / Filter. Allow for operator control of the information they see first. Download: tying design to real operational capability. Balance function with aesthetic.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## React Compiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.

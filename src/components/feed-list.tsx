@@ -38,6 +38,14 @@ export function FeedPreview({ messages }: { messages: Message[] }) {
  * Expanded: the whole buffer, oldest at top, newest at bottom, following the
  * tail only while the reader is already there.
  *
+ * `max-h-80`, not `h-80`: a short feed should expand to exactly its own
+ * height with no dead space at the bottom, and only cap and start
+ * scrolling once the content actually reaches 320px. `max-height` on the
+ * Root plus `height: 100%` on Radix's Viewport is what makes that work —
+ * with height undefined, the Root shrinks to fit its content up to the
+ * cap; only past the cap does it become a definite 320px that the
+ * Viewport (and its own scrolling) then fills exactly.
+ *
  * `role="log"` with a polite live region is applied here and only here. Five
  * simultaneously-live feeds would make the page unusable with a screen
  * reader, so collapsed previews stay silent.
@@ -49,7 +57,7 @@ export function FeedFull({ messages, linkName }: { messages: Message[]; linkName
 
     return (
         <ScrollArea
-            className="h-80"
+            className="max-h-80"
             viewportRef={viewportRef}
             onScrollCapture={handleScroll}
         >

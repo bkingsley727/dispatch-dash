@@ -123,7 +123,7 @@ export function BoardToolbar({
                     size="icon"
                     onClick={onSortDirToggle}
                     title={sortDir === 'asc' ? 'Sort ascending' : 'Sort descending'}
-                    className="size-8"
+                    className="size-11 md:size-8"
                 >
                     {sortDir === 'asc' ? (
                         <ArrowUp aria-hidden="true" className="size-3.5" />
