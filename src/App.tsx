@@ -38,17 +38,6 @@ export default function App() {
         return () => clearTimeout(timer)
     }, [])
 
-    const handleRetry = (id: string) => {
-        setLinks(
-            (current) =>
-                current?.map((link) =>
-                    link.id === id
-                        ? { ...link, status: 'active' as const, fault: undefined }
-                        : link,
-                ) ?? null,
-        )
-    }
-
     const counts = useMemo(() => {
         const c = emptyCounts()
         for (const link of links ?? []) c[link.status] += 1
@@ -118,7 +107,7 @@ export default function App() {
                         ) : (
                             <div className="flex flex-col gap-2.5">
                                 {visibleLinks?.map((link) => (
-                                    <CommLinkCard key={link.id} link={link} onRetry={handleRetry} />
+                                    <CommLinkCard key={link.id} link={link} />
                                 ))}
                             </div>
                         )}

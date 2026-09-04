@@ -1,4 +1,4 @@
-import { Activity, Antenna, TriangleAlert } from 'lucide-react'
+import { Activity, ClockFading, TriangleAlert } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { LinkStatus } from '@/lib/feed/types'
@@ -11,7 +11,7 @@ import type { LinkStatus } from '@/lib/feed/types'
  *
  * The icons are chosen for silhouette contrast, not just meaning:
  *   Activity      horizontal zigzag   traffic is moving on this line
- *   Antenna       vertical mast       up and listening, not transmitting
+ *   ClockFading   fading clock face   idle, waiting — not urgent
  *   TriangleAlert triangle            fault
  *
  * Nothing here is amber. Amber neighbours red, which would make the two
@@ -27,7 +27,7 @@ export const STATUS_META: Record<
         stroke: number
         text: string
         dot: string
-        tint: string
+        tint?: string
     }
 > = {
     active: {
@@ -36,17 +36,13 @@ export const STATUS_META: Record<
         stroke: 2.25,
         text: 'text-status-active',
         dot: 'bg-status-active',
-        tint: 'bg-status-active-bg',
     },
     standby: {
         label: 'Stand-by',
-        Icon: Antenna,
-        // Antenna packs five strokes into 16px; at 2.25 they merge into a
-        // smudge and the silhouette stops being readable.
+        Icon: ClockFading,
         stroke: 1.6,
         text: 'text-status-standby',
         dot: 'bg-status-standby',
-        tint: 'bg-status-standby-bg',
     },
     error: {
         label: 'Error',
@@ -83,13 +79,12 @@ export function StatusBadge({ status, className }: { status: LinkStatus; classNa
  * separate border token to keep in sync with it.
  */
 export function StatusChip({ status, className }: { status: LinkStatus; className?: string }) {
-    const { label, text, dot, tint } = STATUS_META[status]
+    const { label, text, dot } = STATUS_META[status]
 
     return (
         <span
             className={cn(
                 'inline-flex shrink-0 items-center gap-1.5 rounded-sm border border-current px-2.5 py-1 text-xs font-semibold tracking-widest uppercase',
-                tint,
                 text,
                 className,
             )}

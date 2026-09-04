@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { ChevronsDownUp, ChevronsUpDown, RotateCw } from 'lucide-react'
+import { ChevronsDownUp, ChevronsUpDown } from 'lucide-react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { Button } from '@/components/ui/button'
 import { StatusBadge, StatusChip, STATUS_META } from '@/components/status-indicator'
 import { FeedFull, FeedPreview, PREVIEW_COUNT } from '@/components/feed-list'
 import { formatClock } from '@/lib/format'
@@ -17,13 +16,7 @@ import type { CommLink } from '@/lib/feed/types'
  * anchored to the corner of the feed itself, since the feed is the thing
  * being expanded.
  */
-export function CommLinkCard({
-    link,
-    onRetry,
-}: {
-    link: CommLink
-    onRetry?: (id: string) => void
-}) {
+export function CommLinkCard({ link }: { link: CommLink }) {
     const [open, setOpen] = useState(false)
 
     const hiddenCount = Math.max(0, link.messages.length - PREVIEW_COUNT)
@@ -67,17 +60,6 @@ export function CommLinkCard({
                                 {formatClock(link.fault.at)}
                             </span>
                         </p>
-                        {onRetry && (
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => onRetry(link.id)}
-                                className="h-7 gap-1.5 text-xs"
-                            >
-                                <RotateCw aria-hidden="true" className="size-3" />
-                                Retry
-                            </Button>
-                        )}
                     </div>
                 )}
 

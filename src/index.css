@@ -91,11 +91,6 @@
     --status-error: oklch(0.72 0.19 25);
     --status-error-bg: oklch(0.72 0.19 25 / 0.14);
 
-    /* Header gradient — "police blue" bookending the app bar, distinguishing
-       it from the flat card surfaces below. One value used at both ends of
-       the gradient, so the two blooms read as a matched pair. */
-    --header-accent: oklch(0.52 0.19 259 / 0.22);
-
     --chart-1: oklch(0.87 0 0);
     --chart-2: oklch(0.556 0 0);
     --chart-3: oklch(0.439 0 0);
@@ -154,17 +149,6 @@
        of colour and icon, never the only one — it is fully suppressed below. */
     .signal-pulse {
         animation: signal-pulse 2.4s ease-in-out infinite;
-    }
-
-    /* Header finish: background-image layered under the header's own
-       background-color utility (bg-background/80), so both apply without
-       fighting over the same CSS property. */
-    .header-gradient {
-        background-image: linear-gradient(115deg,
-                var(--header-accent) 0%,
-                transparent 42%,
-                transparent 58%,
-                var(--header-accent) 100%);
     }
 }
 

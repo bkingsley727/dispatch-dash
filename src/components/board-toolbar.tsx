@@ -56,9 +56,9 @@ export function BoardToolbar({
                 lines on a narrow viewport, centering would float the label
                 between them instead of pinning it to the first line. */}
             <div className="flex items-center gap-2.5 pt-0.5">
-                {/* <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+                <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
                     Filter
-                </span> */}
+                </span>
                 <ToggleGroup
                     type="single"
                     size="sm"
