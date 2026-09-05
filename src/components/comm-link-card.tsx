@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import { ChevronsDownUp, ChevronsUpDown, Download } from 'lucide-react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Button } from '@/components/ui/button'
@@ -19,7 +19,7 @@ import type { CommLink } from '@/lib/feed/types'
  * being expanded — download lives there too, once expanded, rather than
  * competing with the status chip for header space.
  */
-export function CommLinkCard({ link }: { link: CommLink }) {
+function CommLinkCardImpl({ link }: { link: CommLink }) {
     const [open, setOpen] = useState(false)
 
     const hiddenCount = Math.max(0, link.messages.length - PREVIEW_COUNT)
@@ -141,3 +141,11 @@ export function CommLinkCard({ link }: { link: CommLink }) {
         </Collapsible>
     )
 }
+
+/**
+ * Memoised on `link` identity. The feed source replaces only the link objects
+ * that actually changed on a given tick, so a board of five cards re-renders
+ * the one that just received a message rather than all five — which matters
+ * most for the expanded card, where a re-render walks the whole buffer.
+ */
+export const CommLinkCard = memo(CommLinkCardImpl)

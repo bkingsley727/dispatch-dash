@@ -51,7 +51,11 @@ export function FeedPreview({ messages }: { messages: Message[] }) {
  * reader, so collapsed previews stay silent.
  */
 export function FeedFull({ messages, linkName }: { messages: Message[]; linkName: string }) {
-    const { viewportRef, handleScroll } = useStickyScroll(messages.length, true)
+    // The newest message's id, not the count: the source caps each buffer, so
+    // once a busy link is full its length stops changing and a count-based
+    // revision would quietly stop following the tail exactly when there is
+    // the most traffic to follow.
+    const { viewportRef, handleScroll } = useStickyScroll(messages.at(-1)?.id, true)
 
     if (messages.length === 0) return <EmptyFeed />
 

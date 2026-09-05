@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { AppHeader } from '@/components/app-header'
 import { CommLinkCard } from '@/components/comm-link-card'
 import { BoardSkeleton } from '@/components/card-skeleton'
@@ -10,8 +10,9 @@ import {
     type StatusFilter,
 } from '@/components/board-toolbar'
 import { STATUS_META } from '@/components/status-indicator'
-import { FIXTURE_LINKS } from '@/lib/feed/fixtures'
-import type { CommLink, LinkStatus } from '@/lib/feed/types'
+import { useCommLinks } from '@/hooks/use-comm-links'
+import { useDemoControls } from '@/hooks/use-demo-controls'
+import type { LinkStatus } from '@/lib/feed/types'
 
 const STATUS_RANK: Record<LinkStatus, number> = { active: 0, standby: 1, error: 2 }
 
@@ -22,21 +23,17 @@ function emptyCounts(): Record<LinkStatus, number> {
 /**
  * Board shell.
  *
- * Still reading from fixtures: the design is under review before the demo
- * simulator is wired in. The short delay below is deliberate — it makes the
- * loading state a real, reviewable part of the design rather than dead code
- * that only appears on a slow network.
+ * The board is a pure view over whatever the feed source hands it — filter,
+ * sort and counts are all derived here, and nothing is cached across
+ * emissions. That is what lets links change status underneath the operator
+ * without the toolbar ever falling out of step with the cards.
  */
 export default function App() {
-    const [links, setLinks] = useState<CommLink[] | null>(null)
+    const links = useCommLinks()
+    const { running, toggle } = useDemoControls()
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
     const [sortField, setSortField] = useState<SortField>('name')
     const [sortDir, setSortDir] = useState<SortDir>('asc')
-
-    useEffect(() => {
-        const timer = setTimeout(() => setLinks(FIXTURE_LINKS), 450)
-        return () => clearTimeout(timer)
-    }, [])
 
     const counts = useMemo(() => {
         const c = emptyCounts()
@@ -67,7 +64,7 @@ export default function App() {
 
     return (
         <div className="min-h-dvh">
-            <AppHeader />
+            <AppHeader running={running} onToggleDemo={toggle} />
 
             <main className="mx-auto w-full max-w-[1600px] px-3 py-3 sm:px-6 md:py-4 lg:px-8 xl:px-12">
                 <h1 className="sr-only">Relay comm links</h1>

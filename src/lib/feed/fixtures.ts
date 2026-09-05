@@ -1,28 +1,30 @@
-import type { CommLink, Message } from './types'
+import type { CommLink, LinkStatus, Message } from './types'
 
 /**
- * Static board used while the visual design is under review, before the demo
- * simulator is wired in. Anchored to load time so timestamps read as recent
- * traffic rather than a stale fixed date.
+ * The board's default state: what it shows before live updates are started,
+ * and what it returns to when they are stopped.
+ *
+ * Every state the UI has to handle is present here — a feed long enough to
+ * need scrolling, a short one, a fault with a reason, and a link that has
+ * never transmitted — so the board is fully reviewable standing still,
+ * without waiting for the simulator to happen to produce each case.
+ *
+ * Stored as offsets rather than timestamps. `createDefaultBoard` anchors them
+ * when it is called, so a reset after an hour of live traffic still reads as
+ * recent chatter instead of dropping the board back into the past.
  */
 
-const NOW = Date.now()
-
-/**
- * `lines` are ordered newest-first for readability here; the returned feed is
- * flipped to the newest-last order the view expects.
- */
-function feed(linkId: string, lines: [secondsAgo: number, body: string][]): Message[] {
-    return lines
-        .map(([secondsAgo, body], i) => ({
-            id: `${linkId}-m${i}`,
-            at: NOW - secondsAgo * 1000,
-            body,
-        }))
-        .reverse()
+interface LinkSeed {
+    id: string
+    name: string
+    designator: string
+    status: LinkStatus
+    fault?: { reason: string; secondsAgo: number }
+    /** Newest first here for readability; flipped to newest-last on build. */
+    lines: [secondsAgo: number, body: string][]
 }
 
-export const FIXTURE_LINKS: CommLink[] = [
+const SEEDS: LinkSeed[] = [
     {
         id: 'northgate',
         name: 'Northgate Relay',
@@ -32,7 +34,7 @@ export const FIXTURE_LINKS: CommLink[] = [
         // expanded view has a real, non-marginal case for the max-height
         // cap and internal scroll to demonstrate, not just a feed that
         // happens to peek a few pixels past the threshold.
-        messages: feed('northgate', [
+        lines: [
             [12, 'Unit 4 en route, ETA 6 min'],
             [24, 'Copy that, proceeding to grid 7'],
             [39, 'Dispatch, confirm handoff to Northgate'],
@@ -74,41 +76,41 @@ export const FIXTURE_LINKS: CommLink[] = [
             [1378, 'Unit 7 copy'],
             [1415, 'Unit 9 copy'],
             [1449, 'All units accounted for, radio check complete'],
-        ]),
+        ],
     },
     {
         id: 'harbor',
         name: 'Harbor Watch',
         designator: 'HW-11',
         status: 'standby',
-        messages: feed('harbor', [
+        lines: [
             [248, 'Channel idle, holding'],
             [612, 'Tide watch complete, nothing to report'],
             [980, 'Pier 3 camera back online'],
             [1444, 'Handing watch to night shift'],
             [1902, 'Night shift acknowledged'],
-        ]),
+        ],
     },
     {
         id: 'ridgeline',
         name: 'Ridgeline Post',
         designator: 'RL-02',
         status: 'error',
-        fault: { reason: 'Carrier lost — no acknowledgement in 3 cycles', at: NOW - 184 * 1000 },
-        messages: feed('ridgeline', [
+        fault: { reason: 'Carrier lost — no acknowledgement in 3 cycles', secondsAgo: 184 },
+        lines: [
             [191, 'Signal degrading, switching to backup antenna'],
             [206, 'Backup antenna online, quality poor'],
             [233, 'Ridgeline, do you copy'],
             [271, 'Wind advisory in effect at summit'],
             [318, 'Mast inspection scheduled for 0800'],
-        ]),
+        ],
     },
     {
         id: 'crosstown',
         name: 'Crosstown Dispatch',
         designator: 'CT-07',
         status: 'active',
-        messages: feed('crosstown', [
+        lines: [
             [4, 'Unit 12 clear of the scene'],
             [17, 'Roger, marking closed at 14:21'],
             [31, 'Two more calls holding in queue'],
@@ -117,7 +119,7 @@ export const FIXTURE_LINKS: CommLink[] = [
             [88, 'Second call reassigned to Eastside'],
             [117, 'Eastside confirms, they have capacity'],
             [149, 'Queue clear, standing by'],
-        ]),
+        ],
     },
     {
         id: 'sable',
@@ -125,6 +127,33 @@ export const FIXTURE_LINKS: CommLink[] = [
         designator: 'SR-19',
         status: 'standby',
         // Deliberately empty: exercises the "awaiting first transmission" state.
-        messages: [],
+        lines: [],
     },
 ]
+
+
+/**
+ * Build the default board, with every timestamp measured back from `at`.
+ */
+export function createDefaultBoard(at: number = Date.now()): CommLink[] {
+    return SEEDS.map((seed) => {
+        const messages: Message[] = seed.lines
+            .map(([secondsAgo, body], i) => ({
+                id: `${seed.id}-m${i}`,
+                at: at - secondsAgo * 1000,
+                body,
+            }))
+            .reverse()
+
+        return {
+            id: seed.id,
+            name: seed.name,
+            designator: seed.designator,
+            status: seed.status,
+            messages,
+            ...(seed.fault
+                ? { fault: { reason: seed.fault.reason, at: at - seed.fault.secondsAgo * 1000 } }
+                : {}),
+        }
+    })
+}
