@@ -80,13 +80,13 @@ const EVENT_INTERVAL_S: Record<LinkStatus, [min: number, max: number]> = {
  * These are balanced against `EVENT_INTERVAL_S` for the mix the board settles
  * at, not for how interesting any single transition is. Sampled across twelve
  * seeds over ~1.5 hours of simulated time on the fixture board, it holds at
- * roughly 50% active / 40% stand-by / 10% errored: two or three links carrying
+ * roughly 50% active / 40% standby / 10% errored: two or three links carrying
  * traffic at any moment, a fault surfacing every few minutes, and every link
  * quiet at once only about 2% of the time.
  *
  * The first pass at these numbers looked fine per-link but drifted: a link
  * left `active` about twice as fast as it came back, so after a few minutes
- * the whole board would be sitting on stand-by with nothing to watch.
+ * the whole board would be sitting on standby with nothing to watch.
  *
  * The odd-looking active values are deliberate. These are per-*event* odds, so
  * shortening the active interval to 2s made an active link roll to leave the
@@ -105,7 +105,7 @@ const TRANSITION_CHANCE = {
     activeToStandby: 0.041,
     /** Active link faults. */
     activeToError: 0.014,
-    /** Stand-by link picks up traffic. */
+    /** Standby link picks up traffic. */
     standbyToActive: 0.35,
     /**
      * As above, for a link that has never transmitted. Held low on purpose,

@@ -47,7 +47,7 @@ export default function App() {
         const filtered =
             statusFilter === 'all' ? links : links.filter((l) => l.status === statusFilter)
 
-        // Status sorts by severity rank (active, then stand-by, then error) —
+        // Status sorts by severity rank (active, then standby, then error) —
         // "ascending" is reading order for a monitoring board, not alphabetical,
         // which would otherwise put "Active" and "Error" next to each other
         // and bury the one status that most needs to surface first.

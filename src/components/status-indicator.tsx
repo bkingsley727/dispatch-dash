@@ -16,7 +16,7 @@ import type { LinkStatus } from '@/lib/feed/types'
  *
  * Nothing here is amber. Amber neighbours red, which would make the two
  * states most in need of separation the easiest pair to confuse at a glance,
- * and it implies caution when stand-by is a perfectly healthy state.
+ * and it implies caution when standby is a perfectly healthy state.
  */
 export const STATUS_META: Record<
     LinkStatus,
@@ -38,7 +38,7 @@ export const STATUS_META: Record<
         dot: 'bg-status-active',
     },
     standby: {
-        label: 'Stand-by',
+        label: 'Standby',
         Icon: ClockFading,
         stroke: 1.6,
         text: 'text-status-standby',
@@ -94,7 +94,7 @@ export function StatusChip({ status, className }: { status: LinkStatus; classNam
                 className={cn('size-1.5 rounded-full', dot, status === 'active' && 'signal-pulse')}
             />
             {/* Sentence case in the DOM, uppercased in CSS — screen readers
-                should say "Stand-by", not spell out the letters. */}
+                should say "Standby", not spell out the letters. */}
             {label}
         </span>
     )

@@ -8,6 +8,6 @@ import type { LinkStatus } from './types'
  */
 export const STATUS_LABEL_FOR_LOG: Record<LinkStatus, string> = {
     active: 'ACTIVE',
-    standby: 'STAND-BY',
+    standby: 'STANDBY',
     error: 'ERROR',
 }

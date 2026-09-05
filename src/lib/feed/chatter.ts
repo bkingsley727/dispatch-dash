@@ -59,7 +59,7 @@ const STANDBY_LINES = [
     'Handing watch to next shift',
 ]
 
-/** First line after a link wakes from stand-by. */
+/** First line after a link wakes from standby. */
 const WAKE_LINES = [
     'Coming up on channel, {unit} inbound',
     'Call assigned, taking {grid}',
