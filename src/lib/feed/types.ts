@@ -2,7 +2,7 @@
  * Domain types for the dispatch board.
  *
  * These are deliberately transport-agnostic: nothing here knows whether the
- * messages arrived from a socket, a poll, or the in-browser demo simulator.
+ * messages arrived from a socket, a poll, or the fixture board.
  */
 
 export type LinkStatus = 'active' | 'standby' | 'error'

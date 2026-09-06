@@ -5,8 +5,8 @@ import type { CommLink } from './types'
  *
  * Everything above this line is transport-agnostic: the view subscribes and
  * receives whole boards, and never learns whether they came from a socket, a
- * poll, or the in-browser demo simulator. Swapping the demo for a real
- * backend means writing another `FeedSource` and nothing else.
+ * poll, or the fixture board the app ships with. Pointing the dashboard at a
+ * real backend means writing another `FeedSource` and nothing else.
  *
  * Boards are delivered whole rather than as deltas because the view already
  * derives everything it shows (counts, filters, sort order) from the full

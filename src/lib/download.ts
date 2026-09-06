@@ -36,7 +36,7 @@ export function logFilename(link: CommLink, exportedAt: number = Date.now()): st
 
 /**
  * Build the file in the browser and hand it to the user. No server round
- * trip, so this works offline and against the demo simulator identically.
+ * trip, so this works offline and against any feed source identically.
  */
 export function downloadLog(link: CommLink): void {
     const exportedAt = Date.now()

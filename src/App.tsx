@@ -11,7 +11,6 @@ import {
 } from '@/components/board-toolbar'
 import { STATUS_META } from '@/components/status-indicator'
 import { useCommLinks } from '@/hooks/use-comm-links'
-import { useDemoControls } from '@/hooks/use-demo-controls'
 import type { LinkStatus } from '@/lib/feed/types'
 
 const STATUS_RANK: Record<LinkStatus, number> = { active: 0, standby: 1, error: 2 }
@@ -30,7 +29,6 @@ function emptyCounts(): Record<LinkStatus, number> {
  */
 export default function App() {
     const links = useCommLinks()
-    const { running, toggle } = useDemoControls()
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
     const [sortField, setSortField] = useState<SortField>('name')
     const [sortDir, setSortDir] = useState<SortDir>('asc')
@@ -64,7 +62,7 @@ export default function App() {
 
     return (
         <div className="min-h-dvh">
-            <AppHeader running={running} onToggleDemo={toggle} />
+            <AppHeader />
 
             <main className="mx-auto w-full max-w-[1600px] px-3 py-3 sm:px-6 md:py-4 lg:px-8 xl:px-12">
                 <h1 className="sr-only">Relay comm links</h1>

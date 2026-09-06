@@ -1,17 +1,15 @@
 import type { CommLink, LinkStatus, Message } from './types'
 
 /**
- * The board's default state: what it shows before live updates are started,
- * and what it returns to when they are stopped.
+ * The board's default state.
  *
  * Every state the UI has to handle is present here — a feed long enough to
  * need scrolling, a short one, a fault with a reason, and a link that has
- * never transmitted — so the board is fully reviewable standing still,
- * without waiting for the simulator to happen to produce each case.
+ * never transmitted — so the whole board is reviewable from one load.
  *
  * Stored as offsets rather than timestamps. `createDefaultBoard` anchors them
- * when it is called, so a reset after an hour of live traffic still reads as
- * recent chatter instead of dropping the board back into the past.
+ * when it is called, so the board reads as recent chatter whenever it is
+ * built instead of dropping into the past.
  */
 
 interface LinkSeed {
@@ -32,7 +30,7 @@ const SEEDS: LinkSeed[] = [
         status: 'active',
         // Deliberately long — a full shift's worth of chatter — so the
         // expanded view has a real, non-marginal case for the max-height
-        // cap and internal scroll to demonstrate, not just a feed that
+        // cap and internal scroll to exercise, not just a feed that
         // happens to peek a few pixels past the threshold.
         lines: [
             [12, 'Unit 4 en route, ETA 6 min'],

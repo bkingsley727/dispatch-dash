@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { demoFeed } from '@/lib/feed/simulator'
+import { boardFeed } from '@/lib/feed/board-source'
 import type { FeedSource } from '@/lib/feed/source'
 import type { CommLink } from '@/lib/feed/types'
 
@@ -11,11 +11,11 @@ import type { CommLink } from '@/lib/feed/types'
  * Collapsing the two into one value would leave an empty board looking
  * exactly like a board that never arrived.
  *
- * The source is a parameter, defaulted to the demo, so the board can be
- * pointed at a real backend — or a fixed fixture, in a test — without the
- * component knowing which it got.
+ * The source is a parameter, defaulted to the board the app ships with, so
+ * the board can be pointed at a real backend — or a fixed fixture, in a test
+ * — without the component knowing which it got.
  */
-export function useCommLinks(source: FeedSource = demoFeed): CommLink[] | null {
+export function useCommLinks(source: FeedSource = boardFeed): CommLink[] | null {
     const [links, setLinks] = useState<CommLink[] | null>(null)
 
     // subscribe() returns its own unsubscribe, which is exactly the cleanup
