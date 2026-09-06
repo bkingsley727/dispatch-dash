@@ -50,7 +50,20 @@ export function FeedPreview({ messages }: { messages: Message[] }) {
  * simultaneously-live feeds would make the page unusable with a screen
  * reader, so collapsed previews stay silent.
  */
-export function FeedFull({ messages, linkName }: { messages: Message[]; linkName: string }) {
+export function FeedFull({
+    messages,
+    linkName,
+    className = 'max-h-80',
+}: {
+    messages: Message[]
+    linkName: string
+    /**
+     * Overrides the collapsed card's cap. The detail pane passes `h-full`,
+     * where the feed is the point of the pane and should use every pixel it
+     * is given rather than stopping at 320px with space to spare.
+     */
+    className?: string
+}) {
     // The newest message's id, not the count: the source caps each buffer, so
     // once a busy link is full its length stops changing and a count-based
     // revision would quietly stop following the tail exactly when there is
@@ -61,7 +74,7 @@ export function FeedFull({ messages, linkName }: { messages: Message[]; linkName
 
     return (
         <ScrollArea
-            className="max-h-80"
+            className={className}
             viewportRef={viewportRef}
             onScrollCapture={handleScroll}
         >

@@ -150,6 +150,13 @@
     .signal-pulse {
         animation: signal-pulse 2.4s ease-in-out infinite;
     }
+
+    /* The detail pane arriving after a selection. Short, and a rise of a few
+       pixels rather than a slide: enough to read as "this replaced what was
+       here" without making the operator wait to read the feed. */
+    .detail-enter {
+        animation: detail-enter 180ms ease-out both;
+    }
 }
 
 @keyframes signal-pulse {
@@ -163,6 +170,18 @@
     50% {
         opacity: 0.45;
         transform: scale(0.82);
+    }
+}
+
+@keyframes detail-enter {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
     }
 }
 

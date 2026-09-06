@@ -2,7 +2,8 @@ import { memo, useState } from 'react'
 import { ChevronsDownUp, ChevronsUpDown, Download } from 'lucide-react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Button } from '@/components/ui/button'
-import { StatusBadge, StatusChip, STATUS_META } from '@/components/status-indicator'
+import { STATUS_META } from '@/components/status-indicator'
+import { SignalCardHeader } from '@/components/signal-card-header'
 import { FeedFull, FeedPreview, PREVIEW_COUNT } from '@/components/feed-list'
 import { formatClock } from '@/lib/format'
 import { downloadLog } from '@/lib/download'
@@ -10,7 +11,10 @@ import { cn } from '@/lib/utils'
 import type { CommLink } from '@/lib/feed/types'
 
 /**
- * One comm link.
+ * One comm link, expandable in place.
+ *
+ * This is the narrow-screen card: below the two-column breakpoint there is no
+ * detail pane to send a selection to, so the feed opens where it stands.
  *
  * The header reads left to right as status icon, name, status chip — the
  * icon and the chip's dot+text are two ends of the same status signal, not
@@ -38,25 +42,10 @@ function CommLinkCardImpl({ link }: { link: CommLink }) {
             <article className="bg-card border-border rounded-lg border shadow-xs">
                 {/* Header band: tinted and set apart from the feed below so the
                     link's identity reads before any of its traffic does. */}
-                <header className="bg-muted/40 flex items-center gap-3 rounded-t-lg px-3 py-2 md:px-4">
-                    <StatusBadge status={link.status} />
-
-                    <div className="flex min-w-0 flex-1 items-baseline gap-2.5">
-                        {/* Prominence is a desktop/tablet win: at phone width
-                            the bolder, larger name would truncate too eagerly
-                            against the status chip sharing the row, so it
-                            steps up from the breakpoint up rather than
-                            applying at every width. */}
-                        <h2 className="truncate text-sm font-bold tracking-wide uppercase sm:text-base">
-                            {link.name}
-                        </h2>
-                        <span className="text-muted-foreground hidden font-mono text-xs sm:inline">
-                            {link.designator}
-                        </span>
-                    </div>
-
-                    <StatusChip status={link.status} />
-                </header>
+                <SignalCardHeader
+                    link={link}
+                    className="bg-muted/40 rounded-t-lg px-3 py-2 md:px-4"
+                />
 
                 {link.status === 'error' && link.fault && (
                     <div

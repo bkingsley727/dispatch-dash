@@ -34,3 +34,26 @@ export function BoardSkeleton({ count = 3 }: { count?: number }) {
         </div>
     )
 }
+
+/**
+ * The left pane while the board connects: the stat/filter tiles, then the
+ * list. Shaped like the real thing for the same reason as above — the pane
+ * should settle into place, not rebuild itself.
+ */
+export function SignalListSkeleton({ count = 4 }: { count?: number }) {
+    return (
+        <div aria-hidden="true" className="flex min-h-0 flex-col gap-2.5">
+            <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+                {Array.from({ length: 4 }, (_, i) => (
+                    <Skeleton key={i} className="h-14 rounded-md" />
+                ))}
+            </div>
+            <Skeleton className="h-7 w-40 rounded-md" />
+            <div className="flex flex-col gap-2">
+                {Array.from({ length: count }, (_, i) => (
+                    <CardSkeleton key={i} />
+                ))}
+            </div>
+        </div>
+    )
+}
