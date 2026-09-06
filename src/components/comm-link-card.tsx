@@ -18,10 +18,14 @@ import type { CommLink } from '@/lib/feed/types'
  *
  * The header reads left to right as status icon, name, status chip — the
  * icon and the chip's dot+text are two ends of the same status signal, not
- * two different pieces of information. Expansion is a small icon control
- * anchored to the corner of the feed itself, since the feed is the thing
- * being expanded — download lives there too, once expanded, rather than
- * competing with the status chip for header space.
+ * two different pieces of information.
+ *
+ * The feed's controls move with the state they act on. Collapsed, expansion
+ * is a single icon tucked into the corner of the feed, since the feed is the
+ * thing being expanded and one control does not earn a row of its own. Opened,
+ * download joins it and the pair moves up into a row under the header: two
+ * touch targets floating over the top-right of the traffic would sit on the
+ * newest lines an operator just opened the card to read.
  */
 function CommLinkCardImpl({ link }: { link: CommLink }) {
     const [open, setOpen] = useState(false)
@@ -35,7 +39,45 @@ function CommLinkCardImpl({ link }: { link: CommLink }) {
     // own always-visible control instead.
     const showDownload = canDownload && (open || !canExpand)
     const showCollapseTrigger = canExpand
-    const cornerButtonCount = Number(showDownload) + Number(showCollapseTrigger)
+    const controlCount = Number(showDownload) + Number(showCollapseTrigger)
+
+    // Built once and placed in one of two containers below, since the same
+    // two buttons sit in the feed's corner while collapsed and in a row of
+    // their own while open.
+    const controls = controlCount > 0 && (
+        <>
+            {/* Download only appears once expanded (for feeds with more
+                history than the preview shows) or always (for feeds too short
+                to ever expand) — either way, a feed with content always has a
+                way out. */}
+            {showDownload && (
+                <Button
+                    variant="ghost"
+                    onClick={() => downloadLog(link)}
+                    title={`Download ${link.name} feed as .log`}
+                    className="bg-card hover:bg-accent border-border/70 text-muted-foreground hover:text-foreground size-11 border shadow-xs md:size-7"
+                >
+                    <Download aria-hidden="true" className="size-4" />
+                    <span className="sr-only">Download {link.name} feed as a log file</span>
+                </Button>
+            )}
+            {showCollapseTrigger && (
+                <CollapsibleTrigger
+                    title={open ? 'Collapse feed' : `Show ${hiddenCount} earlier messages`}
+                    className="bg-card text-muted-foreground hover:text-foreground hover:bg-accent focus-visible:ring-ring/50 border-border/70 flex size-11 items-center justify-center rounded-md border shadow-xs transition-colors focus-visible:ring-[3px] focus-visible:outline-none md:size-7"
+                >
+                    {open ? (
+                        <ChevronsDownUp aria-hidden="true" className="size-4" />
+                    ) : (
+                        <ChevronsUpDown aria-hidden="true" className="size-4" />
+                    )}
+                    <span className="sr-only">
+                        {open ? 'Collapse feed' : `Show ${hiddenCount} earlier messages`}
+                    </span>
+                </CollapsibleTrigger>
+            )}
+        </>
+    )
 
     return (
         <Collapsible open={open} onOpenChange={setOpen} asChild>
@@ -63,20 +105,26 @@ function CommLinkCardImpl({ link }: { link: CommLink }) {
                     </div>
                 )}
 
-                {/* relative: the corner controls anchor to this region only —
-                    "top right of the feed", not the card or the header. */}
+                {/* relative: the collapsed card's corner control anchors to
+                    this region only — "top right of the feed", not the card or
+                    the header. */}
                 <div className="border-border/70 relative border-t px-4 py-2 md:px-5">
+                    {open && controls && (
+                        <div className="flex items-center justify-end gap-1.5 pb-2">
+                            {controls}
+                        </div>
+                    )}
+
                     {/* Clearance for the corner controls: wide enough for two
                         44px touch targets side by side on mobile (94px), down
                         to two 28px controls at md+ (62px) when both download
                         and collapse show together; a single button's worth
-                        otherwise — recomputed each time the button sizes
-                        change, since this padding only exists to keep feed
-                        text out from under them. */}
+                        otherwise. Only applies while collapsed — once open the
+                        controls are in the flow above and overlap nothing. */}
                     <div
                         className={cn(
-                            cornerButtonCount === 2 && 'pr-24 md:pr-16',
-                            cornerButtonCount === 1 && 'pr-14 md:pr-9',
+                            !open && controlCount === 2 && 'pr-24 md:pr-16',
+                            !open && controlCount === 1 && 'pr-14 md:pr-9',
                         )}
                     >
                         {open ? (
@@ -88,41 +136,9 @@ function CommLinkCardImpl({ link }: { link: CommLink }) {
                         )}
                     </div>
 
-                    {cornerButtonCount > 0 && (
+                    {!open && controls && (
                         <div className="absolute top-1.5 right-1.5 flex items-center gap-1.5">
-                            {/* Download only appears once expanded (for feeds
-                                with more history than the preview shows) or
-                                always (for feeds too short to ever expand) —
-                                either way, a feed with content always has a
-                                way out. */}
-                            {showDownload && (
-                                <Button
-                                    variant="ghost"
-                                    onClick={() => downloadLog(link)}
-                                    title={`Download ${link.name} feed as .log`}
-                                    className="bg-card hover:bg-accent border-border/70 text-muted-foreground hover:text-foreground size-11 border shadow-xs md:size-7"
-                                >
-                                    <Download aria-hidden="true" className="size-4" />
-                                    <span className="sr-only">
-                                        Download {link.name} feed as a log file
-                                    </span>
-                                </Button>
-                            )}
-                            {showCollapseTrigger && (
-                                <CollapsibleTrigger
-                                    title={open ? 'Collapse feed' : `Show ${hiddenCount} earlier messages`}
-                                    className="bg-card text-muted-foreground hover:text-foreground hover:bg-accent focus-visible:ring-ring/50 border-border/70 flex size-11 items-center justify-center rounded-md border shadow-xs transition-colors focus-visible:ring-[3px] focus-visible:outline-none md:size-7"
-                                >
-                                    {open ? (
-                                        <ChevronsDownUp aria-hidden="true" className="size-4" />
-                                    ) : (
-                                        <ChevronsUpDown aria-hidden="true" className="size-4" />
-                                    )}
-                                    <span className="sr-only">
-                                        {open ? 'Collapse feed' : `Show ${hiddenCount} earlier messages`}
-                                    </span>
-                                </CollapsibleTrigger>
-                            )}
+                            {controls}
                         </div>
                     )}
                 </div>
