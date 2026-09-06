@@ -24,9 +24,17 @@ const TILE_ON_CLASS: Record<StatusFilter, string> = {
     error: 'data-[state=on]:border-status-error/45 data-[state=on]:bg-status-error-bg data-[state=on]:text-status-error',
 }
 
-/** Shared tile shape: a count over its label, sized by content rather than by the toggle's stock height. */
+/**
+ * Shared tile shape: a count over its label, sized by content rather than by
+ * the toggle's stock height.
+ *
+ * `cursor-pointer` is explicit because Tailwind v4's preflight sets buttons to
+ * the default arrow. On a tile this large — mostly number and label, with no
+ * button-like fill — the pointer is the main thing telling an operator it can
+ * be clicked at all.
+ */
 const TILE_CLASS =
-    'h-auto min-w-0 flex-col items-start gap-1 rounded-md border border-border/60 bg-card/50 px-2.5 py-2 transition-colors'
+    'h-auto min-w-0 cursor-pointer flex-col items-start gap-1 rounded-md border border-border/60 bg-card/50 px-2.5 py-2 transition-colors'
 
 /**
  * The board's state and its filter, as one control.
@@ -124,10 +132,10 @@ export function BoardToolbar({
                     }}
                     aria-label="Sort by"
                 >
-                    <ToggleGroupItem value="name" className="text-xs font-medium">
+                    <ToggleGroupItem value="name" className="cursor-pointer text-xs font-medium">
                         Name
                     </ToggleGroupItem>
-                    <ToggleGroupItem value="status" className="text-xs font-medium">
+                    <ToggleGroupItem value="status" className="cursor-pointer text-xs font-medium">
                         Status
                     </ToggleGroupItem>
                 </ToggleGroup>
@@ -137,7 +145,7 @@ export function BoardToolbar({
                     size="icon"
                     onClick={onSortDirToggle}
                     title={sortDir === 'asc' ? 'Sort ascending' : 'Sort descending'}
-                    className="size-11 md:size-7"
+                    className="size-11 cursor-pointer md:size-7"
                 >
                     {sortDir === 'asc' ? (
                         <ArrowUp aria-hidden="true" className="size-3.5" />
